@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users CRUD</title>
+    <style>
+        .buttonEdit {
+            color: black;
+            background: cornflowerblue;
+        }
+        .buttonEdit:hover {
+            color: red;
+            background: cornflowerblue;
+            font-weight: bold;
+        }
+        .buttonDelete {
+            color: black;
+            background: plum;
+        }
+        .buttonDelete:hover {
+            color: red;
+            background: plum;
+            font-weight: bold;
+        }
+        .buttonAdd {
+            color: blue;
+            background: yellow;
+        }
+        .buttonAdd:hover {
+            color: red;
+            background: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h2>Users Table</h2>
+<br>
+<table>
+    <caption>
+        Users in database
+    </caption>
+    <tr>
+        <th>id</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Department</th>
+        <th>Salary</th>
+        <th>Operations</th>
+    </tr>
+    <tr th:each="user : ${allUsers}">
+        <td th:utext="${user.getId()}"></td>
+        <td th:utext="${user.getUsername()}"></td>
+        <td th:utext="${user.getPassword()}"></td>
+        <td th:utext="${user.getDepartment()}"></td>
+        <td th:utext="${user.getSalary()}"></td>
+        <td>
+            <a class="buttonEdit" th:href="@{/admin/updateInfo/{id}(id=${user.getId()})}">Update</a>
+            <a class="buttonDelete" th:href="@{/admin/deleteUser/{id}(id=${user.getId()})}">Delete</a>
+        </td>
+    </tr>
+</table>
+<br>
+<button onclick="window.location.href = '/admin/addNewUser';">Add new user</button>
+<br>
+<br>
+<button class="buttonAdd" onclick="window.location.href = '/admin/generateUsers';">Generate users</button>
+<br>
+<br>
+<button class="buttonDelete" onclick="window.location.href = '/logout';">Разлогиниться</button>
+</body>
+</html>

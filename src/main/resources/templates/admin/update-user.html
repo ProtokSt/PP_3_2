@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Info</title>
+    <style>
+        .buttonEdit {
+            color: black;
+            background: cornflowerblue;
+        }
+        .buttonEdit:hover {
+            color: red;
+            background: cornflowerblue;
+            font-weight: bold;
+        }
+        .buttonDelete {
+            color: black;
+            background: plum;
+        }
+        .buttonDelete:hover {
+            color: red;
+            background: plum;
+            font-weight: bold;
+        }
+        .buttonAdd {
+            color: blue;
+            background: yellow;
+        }
+        .buttonAdd:hover {
+            color: red;
+            background: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h2>Update User Info</h2>
+<br>
+<form th:method="POST" th:action="@{/admin/updateUser}" th:object="${user}">
+    <input type="hidden" th:field="*{id}" id="id">
+
+    <label for="username">Введите имя: </label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Некорректные данные</div>
+    <br>
+    <br>
+    <label for="password">Введите пароль: </label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Некорректные данные</div>    <br>
+    <br>
+    <br>
+    <label for="department">Введите подразделение: </label>
+    <input type="text" th:field="*{department}" id="department"/>
+    <div style="color:red" th:if="${#fields.hasErrors('department')}" th:errors="*{department}">Некорректные данные</div>
+    <br>
+    <br>
+    <label for="salary">Введите жалованье: </label>
+    <input type="number" th:field="*{salary}" id="salary"/>
+    <div style="color:red" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}">Некорректные данные</div>
+    <br>
+    <br>
+    <input type="submit" class="buttonAdd" value="Обновить"/>
+</form>
+<br>
+<br>
+<button class="buttonDelete" onclick="window.location.href = '/logout';">Разлогиниться</button>
+</body>
+</html>

@@ -1,49 +1,65 @@
 package ru.kata.spring.boot_security.demo.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SuccessUserHandler successUserHandler;
+    //Убираем наш AuthenticationProvider так как будем использовать встроенный аппарат Security
+    // сервис собран в один класс
+    // разобрал обратно
+    private final UserDetailsService userDetailsService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
-        this.successUserHandler = successUserHandler;
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
+
+
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        // Приём http запроса
+        // Конфигурация Security
+        // Конфигурация авторизации
+        http.csrf().disable() // отключаем защиту от межсайтовой подделки запросов
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
+                .antMatchers("/login", "/baseRolesInitiation", "/error").permitAll() // общий доступ
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().successHandler(successUserHandler)
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+
+                .and().formLogin().loginPage("/login")
+                .loginProcessingUrl("/process_login")
+                .successHandler(onAuthenticationSuccessHandler())
+//                .defaultSuccessUrl("/user", true) // пока указан дефолт, кастомный хендлер не включается?
+                .failureUrl("/login?error")
+
+                // стирание сессии и куки - разлогинивание. Встроенный функционал Security
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
     }
 
-    // аутентификация inMemory
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
+    public PasswordEncoder getPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
 
-        return new InMemoryUserDetailsManager(user);
+    @Bean
+    public AuthenticationSuccessHandler onAuthenticationSuccessHandler(){
+        return new SuccessUserHandler();
     }
 }
