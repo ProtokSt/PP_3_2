@@ -1,8 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -10,9 +9,10 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
+@Component
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +24,8 @@ public class User implements UserDetails {
     @Column(name = "username", length = 15)
     private String username;
 
-    @Column(name = "password", length = 15)
-    @Size(min = 2, max = 15, message = "Введите от 2 до 15 символов")
+    @Size(min = 2, max = 100, message = "Введите от 2 до 100 символов")
+    @Column(name = "password", length = 100)
     private String password;
 
     @Column(name = "department", length = 15)
@@ -89,12 +89,30 @@ public class User implements UserDetails {
         this.salary = salary;
     }
 
-    public Set<Role> getRoles() {
+    public Collection<Role> getRoles() {
+
         return roles;
+
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     @Override
@@ -107,55 +125,11 @@ public class User implements UserDetails {
                 ", salary=" + salary +
                 '}';
     }
-
     //// UserDetails - Паттерн Spring Security - обёртка над сущностью
     //// Использование внутреннего интерфейса для стандартизации получения данных из сущности
     //// В данном случае встраиваем внутренний интерфейс в саму сущность через реализацию методов
     //// второе главное назначение - возвращать роли=доступные действия, Authorities
     //// хотя судя по "правильности" вынесения инициации ролей в отдельный утиль класс,
-    //// реализацию UserDetails тоже лучше делать отдельным классом
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
+    //// реализацию UserDetails тоже лучше делать отдельным классом.
+    //// переделал в отдельную реализацию в пакете security
 }

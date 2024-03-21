@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.securityfilter;
+package ru.kata.spring.boot_security.demo.security;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

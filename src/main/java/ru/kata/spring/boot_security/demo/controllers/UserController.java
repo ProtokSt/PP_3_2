@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public String userPage(Model model, Principal principal) {
+    public String showPrincipalData(Model model, Principal principal) {
         System.out.println("user GET");
         List<User> accessUsers = new ArrayList<>();
         accessUsers.add(userService.findByUsername(principal.getName()));

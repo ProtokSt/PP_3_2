@@ -1,17 +1,13 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.util.BaseRolesInit;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class AuthController {
@@ -28,6 +24,18 @@ public class AuthController {
     @GetMapping("/login")
     public String loginPage() {
         System.out.println("login GET");
+
+        // тест кодировщика. онлайн кодировщики дают неверные результаты
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        String password = "user";
+        String encodedPassword = passwordEncoder.encode(password);
+        System.out.println();
+        System.out.println("Password is         : " + password);
+        System.out.println("Encoded Password is : " + encodedPassword);
+        System.out.println();
+        boolean isPasswordMatch = passwordEncoder.matches(password, encodedPassword);
+        System.out.println("Password : " + password + "   isPasswordMatch    : " + isPasswordMatch);
+
         return "/login";
     }
     // Метод POST со страницы перехватывает Spring Security

@@ -1,26 +1,29 @@
 // вспомогательный код для ручной генерации таблицы
-create table pp_3_1_2.users
-(
-    id         bigint auto_increment
-        primary key,
-    department varchar(15) null,
-    password   varchar(15) null,
-    salary     int         null,
-    username   varchar(15) null
-);
-
-create table pp_3_1_2.roles
+create table roles
 (
     id   bigint auto_increment
         primary key,
     name varchar(15) null
 );
 
-CREATE TABLE pp_3_1_2.users_roles
+create table users
 (
-    user_id bigint NOT NULL,
-    role_id bigint NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES pp_3_1_2.users (id),
-    FOREIGN KEY (role_id) REFERENCES pp_3_1_2.roles (id)
+    id         bigint auto_increment
+        primary key,
+    department varchar(15)  null,
+    password   varchar(100) not null,
+    salary     int          null,
+    username   varchar(15)  null
 );
+
+create table users_roles
+(
+    user_id bigint not null,
+    role_id bigint not null,
+    primary key (role_id, user_id),
+    constraint FK2o0jvgh89lemvvo17cbqvdxaa
+        foreign key (user_id) references users (id),
+    constraint FKj6m8fwv7oqv74fcehir1a9ffy
+        foreign key (role_id) references roles (id)
+);
+

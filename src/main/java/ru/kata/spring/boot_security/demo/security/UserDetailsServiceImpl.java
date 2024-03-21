@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.services;
+package ru.kata.spring.boot_security.demo.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +13,13 @@ import ru.kata.spring.boot_security.demo.repositories.UserDao;
 // ругается при создании общего сервиса в WebSecurityConfig.class
 // значит возвращаю отдельный
 @Service
-@Transactional
-public class MyUserDetailsService implements UserDetailsService {
+@Transactional(readOnly = true) // Создаст прокси класс для выполнения внутренних вызовов в одной транзакции.
+public class UserDetailsServiceImpl implements UserDetailsService {
+
     private final UserDao userDao;
 
     @Autowired
-    public MyUserDetailsService(UserDao userDao) {
+    public UserDetailsServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -28,6 +29,6 @@ public class MyUserDetailsService implements UserDetailsService {
         if (user == null)
             throw new UsernameNotFoundException("Such user not found!");
 
-        return user;
+        return new UserDetailsImpl(user);
     }
 }
