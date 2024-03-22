@@ -125,6 +125,18 @@ public class User {
                 ", salary=" + salary +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User u = (User) o;
+
+        if (username != u.getUsername()) return false;
+
+        return true;
+    }
     //// UserDetails - Паттерн Spring Security - обёртка над сущностью
     //// Использование внутреннего интерфейса для стандартизации получения данных из сущности
     //// В данном случае встраиваем внутренний интерфейс в саму сущность через реализацию методов

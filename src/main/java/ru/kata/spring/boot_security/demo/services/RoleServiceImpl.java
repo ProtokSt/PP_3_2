@@ -9,7 +9,8 @@ import ru.kata.spring.boot_security.demo.repositories.RoleDao;
 import java.util.List;
 
 @Service
-@Transactional // Создаст прокси класс для выполнения внутренних вызовов в одной транзакции.
+// Создаст прокси класс для выполнения внутренних вызовов в одной транзакции.
+@Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
     private final RoleDao roleDao;
 
@@ -29,16 +30,19 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public void addRole(Role role) {
         roleDao.addRole(role);
     }
 
     @Override
+    @Transactional
     public void removeRole(Long id) {
         roleDao.removeRole(id);
     }
 
     @Override
+    @Transactional
     public void updateRole(Role role) {
         roleDao.updateRole(role);
     }
